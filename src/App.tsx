@@ -1,25 +1,33 @@
 import React, {useState} from 'react'
 import './App.css'
-import { Todolist } from './Todolist'
+import {Todolist} from './Todolist'
+import {v1} from "uuid";
+import {isSymbolObject} from "util/types";
 
-export type TaskType ={
-    id: number
+export type TaskType = {
+    id: string
     title: string
     isDone: boolean
 }
-
+//C
+// R
+// U - change task title, status
+// D
 export type FilterValuesType = "all" | "active" | "completed"
+
 function App() {
+
+    //BLL
     // Data
     const todolistTitle_1: string = "What to learn"
     // const todolistTitle_2: string = "Songs"
     // const todolistTitle_3: string = "Books"
 
     const [tasks, setTasks] = React.useState([
-                 {id: 1, title: "HTML", isDone: true},
-                 {id: 2, title: "JS/TS", isDone: true},
-                 {id: 3, title: "React", isDone: false}
-             ])
+        {id: v1(), title: "HTML", isDone: true},
+        {id: v1(), title: "JS/TS", isDone: true},
+        {id: v1(), title: "React", isDone: false}
+    ])
     // // change logic
     // const removeTask = (taskId: number) => {
     //     const nextState =  tasks.filter(t=> t.id !== taskId)
@@ -42,18 +50,40 @@ function App() {
     //
 
 
-
-    const removeTask = (taskId: number) => {
-        const nextState: any =  []
+    const removeTask = (taskId: string) => {
+        const nextState: any = []
         for (let i = 0; i < tasks.length; i++) {
-             if(tasks[i].id !== taskId) {
-                 nextState.push(tasks[i])
-             }
+            if (tasks[i].id !== taskId) {
+                nextState.push(tasks[i])
+            }
         }
         setTasks((nextState))
     }
 
 
+    const addTask = (title: string) => {
+        const newTask: TaskType = {
+            id: v1(),
+            title: title,
+            isDone: false
+        }
+        const nextTasksState = [newTask, ...tasks]
+        setTasks(nextTasksState)
+    }
+
+    //update
+
+    const changeTaskStatus = (taskId: string, newIsDoneValue: boolean) => {
+        // const taskForUpDate: TaskType | undefined = tasks.find(t => t.id === taskId)
+        // if(taskForUpDate !== undefined) {
+        //     taskForUpDate.isDone = !taskForUpDate.isDone
+        // }
+        //
+        // setTasks([...tasks])
+
+        const nextState: Array<TaskType> = tasks.map(t => t.id === taskId ? {...t, isDone: newIsDoneValue} : t)
+            setTasks(nextState)
+    }
 
     //UI
     return (
@@ -61,8 +91,10 @@ function App() {
             <Todolist
                 title={todolistTitle_1}
                 tasks={tasks}
-                removeTask ={removeTask}/>
-
+                addTask={addTask}
+                removeTask={removeTask}
+                changeTaskStatus={changeTaskStatus}
+                />
 
 
             {/*// changeFilter={changeFilter}/>*/}
